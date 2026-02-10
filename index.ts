@@ -7,9 +7,11 @@ import {
   deuce,
   game,
   forty,
+  points,
   fifteen,
   thirty,
 } from './types/score';
+export { love, fifteen, thirty, points, forty, deuce, advantage, game } from './types/score';
 import { pipe, Option } from 'effect'
 
 // -------- Tooling functions --------- //
@@ -105,7 +107,18 @@ export const scoreWhenForty = (
 
 // Exercice 2
 export const scoreWhenPoint = (current: PointsData, winner: Player): Score => {
-  throw new Error('not implemented');
+  const other = otherPlayer(winner);
+  const winnerPoint = current[winner];
+  return pipe(
+    incrementPoint(winnerPoint),
+    Option.match({
+      onNone: () => forty(winner, current[other]) as Score,
+      onSome: (p) =>
+        winner === 'PLAYER_ONE'
+          ? points(p, current.PLAYER_TWO)
+          : points(current.PLAYER_ONE, p),
+    })
+  );
 };
 
 // Exercice 3
