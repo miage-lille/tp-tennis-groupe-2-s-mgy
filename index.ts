@@ -1,5 +1,5 @@
-import { Player, stringToPlayer } from './types/player';
-import { Point, PointsData, Score } from './types/score';
+import { Player, stringToPlayer, isSamePlayer } from './types/player';
+import { Point, PointsData, Score, deuce, game } from './types/score';
 import { pipe, Option } from 'effect'
 
 // -------- Tooling functions --------- //
@@ -62,7 +62,8 @@ export const scoreWhenAdvantage = (
   advantagedPlayed: Player,
   winner: Player
 ): Score => {
-  throw new Error('not implemented');
+  if (isSamePlayer(advantagedPlayed, winner)) return game(winner);
+  return deuce();
 };
 
 export const scoreWhenForty = (
@@ -75,8 +76,6 @@ export const scoreWhenForty = (
 
 
 // Exercice 2
-// Tip: You can use pipe function from Effect to improve readability.
-// See scoreWhenForty function above.
 export const scoreWhenPoint = (current: PointsData, winner: Player): Score => {
   throw new Error('not implemented');
 };
