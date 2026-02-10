@@ -1,5 +1,15 @@
 import { Player, stringToPlayer, isSamePlayer } from './types/player';
-import { Point, PointsData, Score, deuce, game } from './types/score';
+import {
+  Point,
+  PointsData,
+  Score,
+  FortyData,
+  deuce,
+  game,
+  forty,
+  fifteen,
+  thirty,
+} from './types/score';
 import { pipe, Option } from 'effect'
 
 // -------- Tooling functions --------- //
@@ -66,11 +76,29 @@ export const scoreWhenAdvantage = (
   return deuce();
 };
 
+export const incrementPoint = (point: Point): Option.Option<Point> => {
+  switch (point.kind) {
+    case 'LOVE':
+      return Option.some(fifteen());
+    case 'FIFTEEN':
+      return Option.some(thirty());
+    case 'THIRTY':
+      return Option.none();
+  }
+};
+
 export const scoreWhenForty = (
-  currentForty: unknown, // TO UPDATE WHEN WE KNOW HOW TO REPRESENT FORTY
+  currentForty: FortyData,
   winner: Player
 ): Score => {
-  throw new Error('not implemented');
+  if (isSamePlayer(currentForty.player, winner)) return game(winner);
+  return pipe(
+    incrementPoint(currentForty.otherPoint),
+    Option.match({
+      onNone: () => deuce(),
+      onSome: (p) => forty(currentForty.player, p) as Score,
+    })
+  );
 };
 
 
