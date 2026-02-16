@@ -1,5 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
-import { otherPlayer, playerToString } from '..';
+import {
+  otherPlayer,
+  playerToString,
+  scoreWhenPoint,
+  love,
+  fifteen,
+  thirty,
+} from '..';
 
 describe('Tests for tooling functions', () => {
   test('Given playerOne when playerToString', () => {
@@ -31,15 +38,20 @@ describe('Tests for transition functions', () => {
   //   console.log('To fill when we will know how represent Forty');
   // });
   // -------------------------TESTS POINTS-------------------------- //
-  // test('Given players at 0 or 15 points score kind is still POINTS', () => {
-  //   throw new Error(
-  //     'Your turn to code the preconditions, expected result and test.'
-  //   );
-  // });
+  test('Given players at 0 or 15 points score kind is still POINTS', () => {
+    const s1 = { PLAYER_ONE: love(), PLAYER_TWO: love() };
+    const r1 = scoreWhenPoint(s1, 'PLAYER_ONE');
+    expect((r1 as any).kind).toStrictEqual('POINTS');
 
-  // test('Given one player at 30 and win, score kind is forty', () => {
-  //   throw new Error(
-  //     'Your turn to code the preconditions, expected result and test.'
-  //   );
-  // });
+    const s2 = { PLAYER_ONE: fifteen(), PLAYER_TWO: love() };
+    const r2 = scoreWhenPoint(s2, 'PLAYER_TWO');
+    expect((r2 as any).kind).toStrictEqual('POINTS');
+  });
+
+  test('Given one player at 30 and win, score kind is forty', () => {
+    const s = { PLAYER_ONE: thirty(), PLAYER_TWO: love() };
+    const r = scoreWhenPoint(s, 'PLAYER_ONE');
+    expect((r as any).kind).toStrictEqual('FORTY');
+    expect((r as any).fortyData.player).toStrictEqual('PLAYER_ONE');
+  });
 });
